@@ -100,7 +100,7 @@ const menuCompra = () => {
             break;
     }   
 
-    if (invalidProd == true || invalidOption == true) {
+    if (invalidProd === true || invalidOption === true) {
         alert("Opción inválida. Intente nuevamente");
         menuCompra();
     }
@@ -202,7 +202,7 @@ const formularioDePago = () => {
 
         if (nomValid === false) {
             nombre = prompt(`Ingrese su nombre`);
-            if (validarInfo(nombre)!=true){
+            if (validarInfo(nombre)!==true){
                 continue;
             }
             else if (!/^[A-Za-z]+$/.test(nombre)) {
@@ -214,7 +214,7 @@ const formularioDePago = () => {
 
         if (apValid === false) {
             apellido = prompt(`Ingrese su apellido`);
-            if (validarInfo(apellido)!=true){
+            if (validarInfo(apellido)!==true){
                 continue;
             }        
             else if (!/^[A-Za-z]+$/.test(apellido)) {
@@ -226,7 +226,7 @@ const formularioDePago = () => {
 
         if (telValid === false) {
             tel = prompt(`Ingrese su numero de telefono con el formato: "1123456789". Por este medio será notificado el día de la entrega`);
-            if (validarInfo(tel)!=true){
+            if (validarInfo(tel)!==true){
                 continue;
             }
             else if (isNaN(tel) || tel.length != 10) {
@@ -239,7 +239,7 @@ const formularioDePago = () => {
         if (dirValid === false) {
             direc = prompt(`Ingrese su dirección de domicilio en el cual recibirá su pedido. 
             \n Utilizar el formato: "CALLE NUMERO, LOCALIDAD, PROVINCIA"`);
-            if (validarInfo(direc)!=true){
+            if (validarInfo(direc)!==true){
                 continue;
             }
             else if (!/^[a-zA-Z0-9\s\,\#\-\_\.]+, [a-zA-Z\s]+, [a-zA-Z\s]+$/.test(direc)) {
@@ -251,7 +251,7 @@ const formularioDePago = () => {
 
         if (emailValid === false) {
             email = prompt(`Ingrese su dirección de correo. Allí recibirá su orden de compra, factura y datos del envío.`);
-            if (validarInfo(email)!=true){
+            if (validarInfo(email)!==true){
                 continue;
             }
             else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
