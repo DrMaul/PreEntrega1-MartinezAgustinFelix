@@ -7,21 +7,24 @@ Mi proyecto consistirá en poder hacer llegar a mayor escala todo el trabajo que
 
  */
 
+let compraTotal = 0;
+
+
 const mensajeBienvenida = () => {
     alert("Bienvenido a Ojitos Turcos");
+    compraTotal = 0;
     menuCompra();
 }
 
 const menuCompra = () => {
 
-    let productoID;
     let productoName;
     let productoPrecio;
     let opcion;
     let invalidProd = false;
     let invalidOption = false;
 
-    productoID = prompt(`A continuación, seleccione un producto de la lista para conocer su precio:
+    let productoID = prompt(`A continuación, seleccione un producto de la lista para conocer su precio. Total en carrito: $${compraTotal}
     \n 1- Pulsera de Ojo Turco
     \n 2- Estatua de Buda
     \n 3- Pack 8 Sahumerios
@@ -83,7 +86,7 @@ const menuCompra = () => {
     
     switch (opcion) {
         case "1":
-            comprar(productoName, productoPrecio);
+            agregarAlCarrito(productoName, productoPrecio);
             break;
         case "2":
             menuCompra();
@@ -98,18 +101,19 @@ const menuCompra = () => {
     }   
 
     if (invalidProd == true || invalidOption == true) {
-        alert("Opción inválida. Redirigiendo al menú");
-        mensajeBienvenida();
+        alert("Opción inválida. Intente nuevamente");
+        menuCompra();
     }
 
 }
 
-const comprar = (productoName, productoPrecio) => {
+const agregarAlCarrito = (productoName, productoPrecio) => {
 
-
+    
     compraTotal += productoPrecio;
 
-    let opcion = prompt(`Estas a punto de comprar ${productoName} por $${productoPrecio}. A continuación seleccione una opción para continuar:
+    let opcion = prompt(`Estas a punto de comprar ${productoName} por $${productoPrecio}. Total en carrito: $${compraTotal}
+            \n A continuación seleccione una opción para continuar:
             \n 1- Finalizar compra
             \n 2- Seguir comprando
             \n 3- Volver
@@ -117,30 +121,30 @@ const comprar = (productoName, productoPrecio) => {
 
     switch (opcion) {
         case "1":
-            pagar(compraTotal);
+            comprar();
             break;
         case "2":
             menuCompra();
             break;
         case "3":
+            alert(`Se eliminará ${productoName} del carrito`);
             compraTotal -= productoPrecio;
             menuCompra();
             break;
         case "0":
-            alert("Redirigiendo al menú");
-            compraTotal=0;
+            alert(`Redirigiendo al menú principal`);
             mensajeBienvenida();
             break;
         default:
-            alert("Opción inválida. Redirigiendo al menú");
-            compraTotal=0;
-            mensajeBienvenida();
+            alert("Opción inválida. Intente nuevamente");
+            compraTotal -= productoPrecio;
+            menuCompra();
             break;
     }   
 
 }
 
-const pagar = (compraTotal) => {
+const comprar = () => {
 
     let opcion = prompt(`Su compra total es de $${compraTotal}. A continuación seleccione una opción para continuar:
             \n 1- Pagar
@@ -151,56 +155,155 @@ const pagar = (compraTotal) => {
     switch (opcion) {
         case "1":
             alert(`Su compra de $${compraTotal} esta siendo procesada. Redirigiendo al formulario de pago.`);
-            formularioDePago(compraTotal);
+            formularioDePago();
             break;
         case "2":
-            alert("Cancelando la compra. Redirigiendo al menú");
-            mensajeBienvenida();
+            alert("Cancelando la compra. Se reestablecerá el carrito");
+            compraTotal = 0;
+            menuCompra();
             break;
-        default:
-            alert("Redirigiendo al menú");
+        case "0":
+            alert(`Redirigiendo al menú principal`);
             mensajeBienvenida();
+            break;   
+        default:
+            alert("Opción invalida. Intente nuevamente");
+            comprar();
             break;
     }   
 
 }
 
-const formularioDePago = (compraTotal) => {
+const formularioDePago = () => {
     let nombre;
     let apellido;
     let tel;
     let direc;
+    let email;
+    let intentos = 5;
+
+    let nomValid = false;
+    let apValid= false;
+    let telValid = false;
+    let dirValid = false;
+    let emailValid= false;
 
 
-    alert("Bienvenido al formulario de pago. Por favor completar de forma correta para evitar inconvenientes.")
+    alert(`Bienvenido al formulario de pago. Por favor completar de forma correta para evitar inconvenientes.
+    Usted cuenta con 5 intentos para completar el formulario correctamente. Al acabarse los intentos se cancelará su compra.  `)
 
-    nombre = prompt(`Ingrese su nombre`);
-    apellido = prompt(`Ingrese su apellido`);
-    tel = prompt(`Ingrese su numero de telefono. Por este medio será notificado el día de la entrega`);
-    direc = prompt(`Ingrese su dirección en la cual recibirá su pedido`);
+    for (let i=intentos; i>=0; i--) {
 
-    let confirmar = prompt(`Su pedido de $${compraTotal} a nombre de ${apellido} ${nombre}, con telefono ${tel} espera recibir su pedido en el domicilio ${direc}.
+        alert(`Intentos restantes: ${i}`);
+        if (i === 0) {
+            alert("Ya no quedan intentos. Se cancelará la compra y volverá al menú principal");
+            mensajeBienvenida();
+        }
+
+        if (nomValid === false) {
+            nombre = prompt(`Ingrese su nombre`);
+            if (validarInfo(nombre)!=true){
+                continue;
+            }
+            else if (!/^[A-Za-z]+$/.test(nombre)) {
+                alert("Su información no puede contener números. Por favor, inténtelo de nuevo.");
+                continue;
+            }
+            nomValid = true;
+        }
+
+        if (apValid === false) {
+            apellido = prompt(`Ingrese su apellido`);
+            if (validarInfo(apellido)!=true){
+                continue;
+            }        
+            else if (!/^[A-Za-z]+$/.test(apellido)) {
+                alert("Su información no puede contener números. Por favor, inténtelo de nuevo.");
+                continue;
+            }
+            apValid =true;
+        }
+
+        if (telValid === false) {
+            tel = prompt(`Ingrese su numero de telefono con el formato: "1123456789". Por este medio será notificado el día de la entrega`);
+            if (validarInfo(tel)!=true){
+                continue;
+            }
+            else if (isNaN(tel) || tel.length != 10) {
+                alert(`El formato ingresado es incorrecto, recuerde utilizar el formato "1123456789" . Por favor, inténtelo de nuevo.`);
+                continue;
+            }
+            telValid =true;
+        }
+
+        if (dirValid === false) {
+            direc = prompt(`Ingrese su dirección de domicilio en el cual recibirá su pedido. 
+            \n Utilizar el formato: "CALLE NUMERO, LOCALIDAD, PROVINCIA"`);
+            if (validarInfo(direc)!=true){
+                continue;
+            }
+            else if (!/^[a-zA-Z0-9\s\,\#\-\_\.]+, [a-zA-Z\s]+, [a-zA-Z\s]+$/.test(direc)) {
+                alert(`La dirección debe tener el formato "CALLE NUMERO, LOCALIDAD, PROVINCIA". Por favor, verifique y corrija.`);
+                continue;
+            } 
+            dirValid =true;
+        }
+
+        if (emailValid === false) {
+            email = prompt(`Ingrese su dirección de correo. Allí recibirá su orden de compra, factura y datos del envío.`);
+            if (validarInfo(email)!=true){
+                continue;
+            }
+            else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+                debugger;
+                alert(`La dirección de correo debe tener el formato de email correcto. Por favor, verifique y corrija.`);
+                continue;
+            }
+            emailValid =true;
+        }
+
+        break;
+        
+    }
+    
+
+    let confirmar = prompt(`Su pedido de $${compraTotal}: a nombre de ${apellido} ${nombre}, con telefono ${tel} y email: ${email}, espera recibir su pedido en el domicilio ${direc}.
     \n Esta información es correcta?
     \n 1- SI
     \n 2- NO
     \n 0- Salir`);
 
-    switch (opcion) {
+    switch (confirmar) {
         case "1":
-            alert(`Su compra de $${compraTotal} fue procesada con éxito.`);
+            alert(`Su compra de $${compraTotal} fue procesada con éxito`);
             alert(`Muchas gracias por su compra!. 
             \n Redirigiendo al menú`);
             mensajeBienvenida();
             break;
         case "2":
-            alert("Redirigiendo al formulario");
-            formularioDePago(compraTotal);
+            alert("Redirigiendo al formulario. Por favor completar de forma correta para evitar inconvenientes");
+            formularioDePago();
             break;
         default:
-            alert("Redirigiendo al menú");
+            alert("Compra cancelada. Redirigiendo al menú");
             mensajeBienvenida();
             break;
     }  
 }
 
+const validarInfo = (info) => {
+
+    if (info === null) {
+        alert("Error al ingresar su información. Por favor, inténtelo de nuevo.");
+        return false;
+    } 
+    else if (info.trim() === "") {
+        alert("Su información no puede estar en blanco. Por favor, inténtelo de nuevo.");
+        return false;
+    }
+    return true;
+
+}
+
 mensajeBienvenida();
+
